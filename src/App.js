@@ -24,7 +24,7 @@ class BooksApp extends React.Component {
       }
 
       this.moveBooksToAnotherCategory = this.moveBooksToAnotherCategory.bind(this);
-      this.refreshHomeWithSearchedResults = this.refreshHomeWithSearchedResults.bind(this);
+      //this.refreshHomeWithSearchedResults = this.refreshHomeWithSearchedResults.bind(this);
   }
 
 
@@ -39,12 +39,14 @@ class BooksApp extends React.Component {
     })
   }
 
+  /*
   refreshHomeWithSearchedResults(){
     //alert('here')
     this.setState({
       showSearchPage: false
     })
   }
+  */
 
   moveBooksToAnotherCategory(event, book) {
     BooksAPI.update(book, event.target.value).then(() => {
@@ -53,7 +55,7 @@ class BooksApp extends React.Component {
       })
     })
     //this.browserHistory.push('/');
-    this.refreshHomeWithSearchedResults();
+    //this.refreshHomeWithSearchedResults();
   }
 
   render() {
@@ -78,10 +80,12 @@ class BooksApp extends React.Component {
     return (
       <div className='app'>
 
-        <Route path='/search' render={() => (
+        <Route path='/search' render={({history}) => (
           <SearchBooks
-            onSearchBook={this.refreshHomeWithSearchedResults}
-            onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
+            onMoveBooksToAnotherCategory={(event, book)=>{
+              this.moveBooksToAnotherCategory (event, book)
+              history.push('/')
+            }}
           />
         )}/>
 

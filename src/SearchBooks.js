@@ -19,8 +19,7 @@ class SearchBooks extends Component {
   }
 
   static propTypes = {
-    onMoveBooksToAnotherCategory: PropTypes.func.isRequired,
-    onSearchBook: PropTypes.func.isRequired
+    onMoveBooksToAnotherCategory: PropTypes.func.isRequired
   }
 
   componentDidMount() {
@@ -48,7 +47,7 @@ class SearchBooks extends Component {
 
   render() {
 
-    const { onMoveBooksToAnotherCategory, onSearchBook } = this.props
+    const { onMoveBooksToAnotherCategory } = this.props
     const { query } = this.state
 
     let showingBooks = this.state.searchedBooks;
@@ -91,7 +90,6 @@ class SearchBooks extends Component {
                 book={book ? book : null}
                 key={book.id}
                 onMoveBooksToAnotherCategory={onMoveBooksToAnotherCategory}
-                onSearchBook={onSearchBook}
                />
             ))}
 
