@@ -7,25 +7,31 @@ import * as BooksAPI from './utils/BooksAPI'
 import './App.css'
 
 class BooksApp extends React.Component {
-  state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: true,
-    books: [],
-    currentlyReading: null,
-    wantToRead: null,
-    readAlready: null
+
+  constructor(props) {
+    super(props)
+    this.state = {
+        /**
+         * TODO: Instead of using this state variable to keep track of which page
+         * we're on, use the URL in the browser's address bar. This will ensure that
+         * users can use the browser's back and forward buttons to navigate between
+         * pages, as well as provide a good URL they can bookmark and share.
+         */
+        showSearchPage: true,
+        books: [],
+        currentlyReading: null,
+        wantToRead: null,
+        readAlready: null
+      }
   }
 
 
+
+
   componentDidMount() {
-    BooksAPI.getAll().then((books) => {
-      console.log(books)
-      this.setState({ books })
+    BooksAPI.getAll().then((allBooks) => {
+      console.log(allBooks)
+      this.setState({ books: allBooks })
     })
   }
 
@@ -33,8 +39,12 @@ class BooksApp extends React.Component {
 
   }
 
-  moveBooksToAnotherCategory() {
-
+  moveBooksToAnotherCategory(event, book) {
+    BooksAPI.update(book, event.target.value).then(() => {
+      BooksAPI.getAll().then((books) => {
+        this.setState({ books })
+      })
+    })
   }
 
   render() {
@@ -66,17 +76,17 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <ListBooks
-                onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
+                onMoveBooksToAnotherCategory={(event,book) => {this.moveBooksToAnotherCategory(event,book)}}
                 books={currentlyReading}
                 title='Currently Reading'
               />
               <ListBooks
-                onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
+                onMoveBooksToAnotherCategory={(event,book) => {this.moveBooksToAnotherCategory(event,book)}}
                 books={wantToRead}
                 title='Want to Read'
               />
               <ListBooks
-                onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
+                onMoveBooksToAnotherCategory={(event,book) => {this.moveBooksToAnotherCategory(event,book)}}
                 books={readAlready}
                 title='Read'
               />
