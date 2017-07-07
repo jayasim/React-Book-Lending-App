@@ -17,12 +17,14 @@ class BooksApp extends React.Component {
          * users can use the browser's back and forward buttons to navigate between
          * pages, as well as provide a good URL they can bookmark and share.
          */
-        showSearchPage: true,
         books: [],
         currentlyReading: null,
         wantToRead: null,
         readAlready: null
       }
+
+      this.moveBooksToAnotherCategory = this.moveBooksToAnotherCategory.bind(this);
+      this.refreshHomeWithSearchedResults = this.refreshHomeWithSearchedResults.bind(this);
   }
 
 
@@ -31,12 +33,17 @@ class BooksApp extends React.Component {
   componentDidMount() {
     BooksAPI.getAll().then((allBooks) => {
       console.log(allBooks)
-      this.setState({ books: allBooks })
+      this.setState({
+        books: allBooks
+      })
     })
   }
 
-  searchBooks() {
-
+  refreshHomeWithSearchedResults(){
+    //alert('here')
+    this.setState({
+      showSearchPage: false
+    })
   }
 
   moveBooksToAnotherCategory(event, book) {
@@ -45,6 +52,8 @@ class BooksApp extends React.Component {
         this.setState({ books })
       })
     })
+    //this.browserHistory.push('/');
+    this.refreshHomeWithSearchedResults();
   }
 
   render() {
@@ -57,15 +66,22 @@ class BooksApp extends React.Component {
       wantToRead = this.state.books.filter((book) => book.shelf === 'wantToRead')
       readAlready = this.state.books.filter((book) => book.shelf === 'read')
     }
+
+    //let shelfTypes = this.state.shelfs;
+
+    //let booksArray = [...currentlyReading,...wantToRead,...readAlready];
+    //let booksArray = {currentlyReading, wantToRead, readAlready};
+
+    //let allBooksInShelf = this.state.books;
+    //console.log(allBooksInShelf.length);
+
     return (
       <div className='app'>
 
-        <Route path='/search' render={({ history }) => (
+        <Route path='/search' render={() => (
           <SearchBooks
-            onSearchBook={() => {
-              this.searchBooks()
-              history.push('/')
-            }}
+            onSearchBook={this.refreshHomeWithSearchedResults}
+            onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
           />
         )}/>
 
@@ -76,17 +92,17 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <ListBooks
-                onMoveBooksToAnotherCategory={(event,book) => {this.moveBooksToAnotherCategory(event,book)}}
+                onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
                 books={currentlyReading}
                 title='Currently Reading'
               />
               <ListBooks
-                onMoveBooksToAnotherCategory={(event,book) => {this.moveBooksToAnotherCategory(event,book)}}
+                onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
                 books={wantToRead}
                 title='Want to Read'
               />
               <ListBooks
-                onMoveBooksToAnotherCategory={(event,book) => {this.moveBooksToAnotherCategory(event,book)}}
+                onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
                 books={readAlready}
                 title='Read'
               />
