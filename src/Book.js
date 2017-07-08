@@ -9,6 +9,7 @@ class Books extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      bookShelf: ""
     }
   }
 
@@ -17,10 +18,22 @@ class Books extends Component {
     onMoveBooksToAnotherCategory: PropTypes.func.isRequired,
   }
 
+  componentDidMount() {
+      const { book, getBookById } = this.props
+      let bookOnShelf = getBookById(book.id);
+      let shelf;
+      if(bookOnShelf !== null) {
+          shelf = bookOnShelf.shelf
+      } else {
+          shelf = 'none'
+      }
+      this.setState({bookShelf: shelf})
+  }
 
   render() {
     const { book, onMoveBooksToAnotherCategory } = this.props
 
+    //let bookOnShelf =
     return (
 
             <li key={book.id}>
@@ -28,7 +41,7 @@ class Books extends Component {
                 <div className="book-top">
                   <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks ? book.imageLinks.thumbnail : ''})` }}></div>
                   <div className="book-shelf-changer">
-                    <select value={book.shelf} onChange={(event) => onMoveBooksToAnotherCategory(event, book)}>
+                    <select selected value={this.state.bookShelf} onChange={(event) => onMoveBooksToAnotherCategory(event, book)}>
                       <option value="none" disabled>Move to...</option>
                       <option value="currentlyReading">Currently Reading</option>
                       <option value="wantToRead">Want to Read</option>

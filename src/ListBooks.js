@@ -22,7 +22,7 @@ class ListBooks extends Component {
 
 
   render() {
-    const { books, onMoveBooksToAnotherCategory, title } = this.props
+    const { books, onMoveBooksToAnotherCategory, title, getBookById } = this.props
     books.sort(sortBy('title'))
 
     return (
@@ -42,6 +42,7 @@ class ListBooks extends Component {
                           book={book ? book : null}
                           key={book.id}
                           onMoveBooksToAnotherCategory={onMoveBooksToAnotherCategory}
+                          getBookById={getBookById}
                          />
                       ))
                     }

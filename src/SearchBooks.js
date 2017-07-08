@@ -47,7 +47,7 @@ class SearchBooks extends Component {
 
   render() {
 
-    const { onMoveBooksToAnotherCategory } = this.props
+    const { onMoveBooksToAnotherCategory, getBookById } = this.props
     const { query } = this.state
 
     let showingBooks = this.state.searchedBooks;
@@ -90,6 +90,7 @@ class SearchBooks extends Component {
                 book={book ? book : null}
                 key={book.id}
                 onMoveBooksToAnotherCategory={onMoveBooksToAnotherCategory}
+                getBookById={getBookById}
                />
             ))}
 

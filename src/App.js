@@ -11,12 +11,6 @@ class BooksApp extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-        /**
-         * TODO: Instead of using this state variable to keep track of which page
-         * we're on, use the URL in the browser's address bar. This will ensure that
-         * users can use the browser's back and forward buttons to navigate between
-         * pages, as well as provide a good URL they can bookmark and share.
-         */
         books: [],
         currentlyReading: null,
         wantToRead: null,
@@ -24,6 +18,7 @@ class BooksApp extends React.Component {
       }
 
       this.moveBooksToAnotherCategory = this.moveBooksToAnotherCategory.bind(this);
+      this.getBookById = this.getBookById.bind(this);
       //this.refreshHomeWithSearchedResults = this.refreshHomeWithSearchedResults.bind(this);
   }
 
@@ -32,11 +27,25 @@ class BooksApp extends React.Component {
 
   componentDidMount() {
     BooksAPI.getAll().then((allBooks) => {
-      //console.log(allBooks)
+      console.log(allBooks)
       this.setState({
         books: allBooks
       })
     })
+  }
+
+
+  getBookById(id) {
+  let books
+
+    if(this.state.books) {
+      books = this.state.books.filter((book) => book.id === id)
+      if (books.length > 0) {
+        return books[0]
+      } else {
+        return null
+      }
+    }
   }
 
   /*
@@ -49,10 +58,12 @@ class BooksApp extends React.Component {
   */
 
   moveBooksToAnotherCategory(event, book) {
+    let shelfValue = event.target.value;
     BooksAPI.update(book, event.target.value).then(() => {
-      BooksAPI.getAll().then((books) => {
-        this.setState({ books })
-      })
+      book.shelf = shelfValue;
+      this.setState(state => ({
+        books:state.books.filter(b => b.id !== book.id).concat([ book ])
+      }))
     })
     //this.browserHistory.push('/');
     //this.refreshHomeWithSearchedResults();
@@ -62,6 +73,8 @@ class BooksApp extends React.Component {
     let currentlyReading
     let wantToRead
     let readAlready
+
+    //let allBooks = this.state.books
 
     if(this.state.books !== null) {
       currentlyReading = this.state.books.filter((book) => book.shelf === 'currentlyReading')
@@ -82,10 +95,18 @@ class BooksApp extends React.Component {
 
         <Route path='/search' render={({history}) => (
           <SearchBooks
+
             onMoveBooksToAnotherCategory={(event, book)=>{
               this.moveBooksToAnotherCategory (event, book)
               history.push('/')
             }}
+            getBookById={this.getBookById}
+            /*
+            onMoveBooksToAnotherCategory={()=>{
+              this.moveBooksToAnotherCategory;
+              history.push('/')
+            }}
+            */
           />
         )}/>
 
@@ -99,16 +120,19 @@ class BooksApp extends React.Component {
                 onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
                 books={currentlyReading}
                 title='Currently Reading'
+                getBookById={this.getBookById}
               />
               <ListBooks
                 onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
                 books={wantToRead}
                 title='Want to Read'
+                getBookById={this.getBookById}
               />
               <ListBooks
                 onMoveBooksToAnotherCategory={this.moveBooksToAnotherCategory}
                 books={readAlready}
                 title='Read'
+                getBookById={this.getBookById}
               />
             </div>
           <div className="open-search">
